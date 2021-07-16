@@ -2,17 +2,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class UI{
 
     JFrame gameWindow;
-    JPanel startQuitPanel, titlePanel, dungeonTextPanel, choicePanel;
-    JLabel titleLabel;
+    JPanel startQuitPanel, titlePanel, dungeonTextPanel, choicePanel, hudPanel;
+    JLabel titleLabel, hpLabel, hpNumLabel, potionLabel, potionNumLabel, levelLabel, levelNumLabel;
     JButton startButton, quitButton, choiceAttack, choicePotion, choiceFlee;
     JTextArea dungeonText;
     Font titleFont = new Font("Serif", Font.ITALIC, 90);
     Font regFont = new Font("Serif", Font.PLAIN, 25);
     Container container;
+    Player player = new Player();
+
+    ArrayList<Mob> Mobs = new ArrayList<Mob>();
+    Mob skeleton = new Mob("Skeleton");
+    Mob spider = new Mob("Spider");
+    Mob goblin = new Mob("Goblin");
+    Mob kobold = new Mob("Kobold");
 
     // START MENU
     public UI() {
@@ -30,6 +38,7 @@ public class UI{
         gameWindow.getContentPane().setBackground(Color.black);
         gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gameWindow.setLayout(null);
+        gameWindow.setResizable(false);
         container = gameWindow.getContentPane();
 
         // TITLE OF GAME
@@ -47,11 +56,15 @@ public class UI{
         startButton.setBackground(Color.black);
         startButton.setForeground(Color.white);
         startButton.setFont(regFont);
-        startButton.addActionListener(new ActionHandler());
+        startButton.addActionListener(new StartHandler());
+        startButton.setFocusPainted(false);
+
         quitButton.setBackground(Color.black);
         quitButton.setForeground(Color.white);
         quitButton.setFont(regFont);
         quitButton.addActionListener(new QuitHandler());
+        quitButton.setFocusPainted(false);
+
         startQuitPanel.add(startButton);
         startQuitPanel.add(quitButton);
         container.add(startQuitPanel);
@@ -60,10 +73,16 @@ public class UI{
 
     // MAIN GAME SCREEN
     public void gameScreen(){
-        GridLayout layout = new GridLayout(4,1);
         dungeonTextPanel = new JPanel();
-        dungeonText = new JTextArea("This is the main text area. Placeholder text @@@@@@@@@@@@@@@@@@@@@@@@");
         choicePanel = new JPanel();
+        hudPanel = new JPanel();
+        hpLabel = new JLabel("Health:");
+        potionLabel = new JLabel("Potions:");
+        levelLabel = new JLabel("Level:");
+        hpNumLabel = new JLabel();
+        potionNumLabel = new JLabel();
+        levelNumLabel = new JLabel();
+        dungeonText = new JTextArea("This is the main text area. Placeholder text @@@@@@@@@@@@@@@@@@@@@@@@");
         choiceAttack = new JButton("Attack");
         choicePotion = new JButton("Potion");
         choiceFlee = new JButton("Flee");
@@ -80,32 +99,67 @@ public class UI{
         dungeonText.setForeground(Color.white);
         dungeonText.setFont(regFont);
         dungeonText.setLineWrap(true);
+        dungeonText.setEditable(false);
         dungeonTextPanel.add(dungeonText);
         container.add(dungeonTextPanel);
 
         // CHOICE BUTTONS AND PANEL
-        layout.setVgap(5);
         choicePanel.setBounds(300, 400, 200, 150);
         choicePanel.setBackground(Color.black);
-        choicePanel.setLayout(layout);
+        choicePanel.setLayout(new GridLayout(4, 1, 0, 5));
         container.add(choicePanel);
 
         choiceAttack.setBackground(Color.black);
         choiceAttack.setForeground(Color.white);
         choiceAttack.setFont(regFont);
+        choiceAttack.setFocusPainted(false);
         choicePanel.add(choiceAttack);
+
         choicePotion.setBackground(Color.black);
         choicePotion.setForeground(Color.white);
         choicePotion.setFont(regFont);
+        choicePotion.setFocusPainted(false);
         choicePanel.add(choicePotion);
+
         choiceFlee.setBackground(Color.black);
         choiceFlee.setForeground(Color.white);
         choiceFlee.setFont(regFont);
+        choiceFlee.setFocusPainted(false);
         choicePanel.add(choiceFlee);
+
+        // PLAYER HUD
+        hudPanel.setBounds(20, 10, 750, 60);
+        hudPanel.setBackground(Color.black);
+        hudPanel.setLayout(new GridLayout(1, 6));
+        container.add(hudPanel);
+
+        hpLabel.setForeground(Color.white);
+        hpLabel.setFont(regFont);
+        hpNumLabel.setForeground(Color.white);
+        hpNumLabel.setFont(regFont);
+        hpNumLabel.setText(String.valueOf(player.getHpAmount()));
+        hudPanel.add(hpLabel);
+        hudPanel.add(hpNumLabel);
+
+        potionLabel.setForeground(Color.white);
+        potionLabel.setFont(regFont);
+        potionNumLabel.setForeground(Color.white);
+        potionNumLabel.setFont(regFont);
+        potionNumLabel.setText(String.valueOf(player.getPotionAmount()));
+        hudPanel.add(potionLabel);
+        hudPanel.add(potionNumLabel);
+
+        levelLabel.setForeground(Color.white);
+        levelLabel.setFont(regFont);
+        levelNumLabel.setForeground(Color.white);
+        levelNumLabel.setFont(regFont);
+        levelNumLabel.setText(String.valueOf(player.getLevelAmount()));
+        hudPanel.add(levelLabel);
+        hudPanel.add(levelNumLabel);
     }
 
     // START BUTTON ACTION
-    public class ActionHandler implements ActionListener{
+    public class StartHandler implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
