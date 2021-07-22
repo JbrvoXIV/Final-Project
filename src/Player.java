@@ -1,23 +1,23 @@
+import java.util.Random;
 public class Player {
 
-    private int hpAmount, potionAmount, levelAmount;
+    private int hpAmount, potionAmount, damageModifier, hpModifier, potionModifier;
+    Random random = new Random();
 
     Player(){
-        this.hpAmount = 100;
+        this.hpAmount = 150;
         this.potionAmount = 3;
-        this.levelAmount = 1;
+        this.damageModifier = 0;
+        this.hpModifier = 50;
+        potionModifier = 1;
     }
 
     public int getHpAmount() {
-        return hpAmount;
+        return this.hpAmount;
     }
 
     public int getPotionAmount() {
-        return potionAmount;
-    }
-
-    public int getLevelAmount() {
-        return levelAmount;
+        return this.potionAmount;
     }
 
     public void setHpAmount(int hpAmount) {
@@ -28,7 +28,21 @@ public class Player {
         this.potionAmount = potionAmount;
     }
 
-    public void setLevelAmount(int levelAmount) {
-        this.levelAmount = levelAmount;
+    public void increaseStats() {
+        this.damageModifier += 10;
+        this.hpAmount = 150 + this.hpModifier;
+        this.hpModifier += 50;
+        this.potionAmount = 3 + this.potionModifier;
+        this.potionModifier += 1;
+    }
+
+    public int dealDamage(){
+        return this.damageModifier + (random.nextInt(16) + 7);
+    }
+
+    public void drinkPotion(){
+        if(this.potionAmount > 0){
+            this.hpAmount += 30;
+        }
     }
 }

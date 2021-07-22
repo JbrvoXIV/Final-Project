@@ -2,25 +2,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class UI{
 
     JFrame gameWindow;
-    JPanel startQuitPanel, titlePanel, dungeonTextPanel, choicePanel, hudPanel;
-    JLabel titleLabel, hpLabel, hpNumLabel, potionLabel, potionNumLabel, levelLabel, levelNumLabel;
-    JButton startButton, quitButton, choiceAttack, choicePotion, choiceFlee;
-    JTextArea dungeonText;
+    JPanel startQuitPanel, titlePanel, dungeonTextPanel,choicePanel, hudPanel, enemyHPPanel;
+    JLabel titleLabel, hpLabel, hpNumLabel, potionLabel, potionNumLabel, levelLabel, levelNumLabel, enemyHPLabel,
+            enemyHPNumLabel;
+    JButton startButton, quitButton, choiceAttack = new JButton("Attack"),
+            choicePotion = new JButton("Potion"), choiceFlee = new JButton("Flee");
+    JTextArea dungeonText = new JTextArea();
     Font titleFont = new Font("Serif", Font.ITALIC, 90);
     Font regFont = new Font("Serif", Font.PLAIN, 25);
     Container container;
-    Player player = new Player();
-
-    ArrayList<Mob> Mobs = new ArrayList<Mob>();
-    Mob skeleton = new Mob("Skeleton");
-    Mob spider = new Mob("Spider");
-    Mob goblin = new Mob("Goblin");
-    Mob kobold = new Mob("Kobold");
 
     // START MENU
     public UI() {
@@ -76,25 +70,25 @@ public class UI{
         dungeonTextPanel = new JPanel();
         choicePanel = new JPanel();
         hudPanel = new JPanel();
+        enemyHPPanel = new JPanel();
         hpLabel = new JLabel("Health:");
         potionLabel = new JLabel("Potions:");
         levelLabel = new JLabel("Level:");
-        hpNumLabel = new JLabel();
-        potionNumLabel = new JLabel();
-        levelNumLabel = new JLabel();
-        dungeonText = new JTextArea("This is the main text area. Placeholder text @@@@@@@@@@@@@@@@@@@@@@@@");
-        choiceAttack = new JButton("Attack");
-        choicePotion = new JButton("Potion");
-        choiceFlee = new JButton("Flee");
+        enemyHPLabel = new JLabel("Enemy Health: ");
+        hpNumLabel = new JLabel("150");
+        potionNumLabel = new JLabel("3");
+        levelNumLabel = new JLabel("1");
+        enemyHPNumLabel = new JLabel("100");
 
         // MOVE FROM MAIN SCREEN TO MAIN SCREEN
         titlePanel.setVisible(false);
         startQuitPanel.setVisible(false);
 
         // MAIN TEXT PANEL FOR GAME
-        dungeonTextPanel.setBounds(100, 100, 600, 300);
+        dungeonTextPanel.setBounds(100, 100, 600, 200);
         dungeonTextPanel.setBackground(Color.black);
-        dungeonText.setBounds(0, 100, 450, 300);
+        dungeonTextPanel.setLayout(new GridBagLayout());
+        dungeonText.setBounds(100, 50, 500, 300);
         dungeonText.setBackground(Color.black);
         dungeonText.setForeground(Color.white);
         dungeonText.setFont(regFont);
@@ -137,7 +131,6 @@ public class UI{
         hpLabel.setFont(regFont);
         hpNumLabel.setForeground(Color.white);
         hpNumLabel.setFont(regFont);
-        hpNumLabel.setText(String.valueOf(player.getHpAmount()));
         hudPanel.add(hpLabel);
         hudPanel.add(hpNumLabel);
 
@@ -145,7 +138,6 @@ public class UI{
         potionLabel.setFont(regFont);
         potionNumLabel.setForeground(Color.white);
         potionNumLabel.setFont(regFont);
-        potionNumLabel.setText(String.valueOf(player.getPotionAmount()));
         hudPanel.add(potionLabel);
         hudPanel.add(potionNumLabel);
 
@@ -153,14 +145,43 @@ public class UI{
         levelLabel.setFont(regFont);
         levelNumLabel.setForeground(Color.white);
         levelNumLabel.setFont(regFont);
-        levelNumLabel.setText(String.valueOf(player.getLevelAmount()));
         hudPanel.add(levelLabel);
         hudPanel.add(levelNumLabel);
+
+        // ENEMY HUD
+        enemyHPPanel.setBounds(200, 300, 400, 80);
+        enemyHPPanel.setBackground(Color.black);
+        enemyHPLabel.setForeground(Color.white);
+        enemyHPLabel.setFont(regFont);
+        enemyHPNumLabel.setForeground(Color.white);
+        enemyHPNumLabel.setFont(regFont);
+        enemyHPPanel.add(enemyHPLabel);
+        enemyHPPanel.add(enemyHPNumLabel);
+        container.add(enemyHPPanel);
+    }
+
+    // GAME LOST EXIT
+    public void endGameLoss(){
+        hpNumLabel.setText("0");
+        int okButton = JOptionPane.showConfirmDialog(null, "You died! " +
+                "Press 'OK' to exit.", "GAME OVER", JOptionPane.DEFAULT_OPTION);
+        if (okButton == 0) {
+            System.exit(0);
+        }
+    }
+
+    // GAME WON EXIT
+    public void endGameWin(){
+        enemyHPNumLabel.setText("0");
+        int okButton = JOptionPane.showConfirmDialog(null, "Congrats, you've conquered the dungeon!"
+                + " Press 'OK' to exit.", "GAME OVER", JOptionPane.DEFAULT_OPTION);
+        if (okButton == 0) {
+            System.exit(0);
+        }
     }
 
     // START BUTTON ACTION
     public class StartHandler implements ActionListener{
-
         @Override
         public void actionPerformed(ActionEvent e) {
             gameScreen();
@@ -169,7 +190,6 @@ public class UI{
 
     // QUIT BUTTON ACTION
     public static class QuitHandler implements ActionListener{
-
         @Override
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
